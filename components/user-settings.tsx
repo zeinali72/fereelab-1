@@ -66,7 +66,7 @@ export function UserSettings({ user }: UserSettingsProps) {
       if (response.ok) {
         setHasApiKey(true);
         setApiKey('');
-        toast.success('OpenRouter API key saved successfully');
+        toast.success('API key saved successfully');
         setOpen(false);
       } else {
         toast.error('Failed to save API key');
@@ -114,10 +114,10 @@ export function UserSettings({ user }: UserSettingsProps) {
             </Select>
           </div>
 
-          {/* OpenRouter API Key */}
+          {/* API Key Configuration */}
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="apikey" className="text-right">
-              OpenRouter API Key
+              API Key
             </Label>
             <div className="col-span-3 space-y-2">
               {hasApiKey ? (
@@ -132,20 +132,12 @@ export function UserSettings({ user }: UserSettingsProps) {
               <Input
                 id="apikey"
                 type="password"
-                placeholder="Enter your OpenRouter API key"
+                placeholder="Enter your API key"
                 value={apiKey}
                 onChange={(e) => setApiKey(e.target.value)}
               />
               <p className="text-xs text-muted-foreground">
-                Get your API key from{' '}
-                <a
-                  href="https://openrouter.ai/keys"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-500 hover:underline"
-                >
-                  OpenRouter
-                </a>
+                Configure your AI provider API key for chat functionality
               </p>
             </div>
           </div>

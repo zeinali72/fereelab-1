@@ -149,7 +149,7 @@ export async function POST(request: Request) {
     // Get user's OpenRouter API key
     const userApiKey = await getUserOpenRouterApiKey(session.user.id);
     if (!userApiKey) {
-      return new ChatSDKError('unauthorized:chat', 'OpenRouter API key not found. Please set your API key in settings.').toResponse();
+      return new ChatSDKError('unauthorized:chat', 'API key not found. Please set your API key in settings.').toResponse();
     }
 
     // Create provider with user's API key
