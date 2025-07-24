@@ -3,7 +3,7 @@ import {
   extractReasoningMiddleware,
   wrapLanguageModel,
 } from 'ai';
-import { xai } from '@ai-sdk/xai';
+import { openai } from '@ai-sdk/openai';
 import {
   artifactModel,
   chatModel,
@@ -11,6 +11,26 @@ import {
   titleModel,
 } from './models.test';
 import { isTestEnvironment } from '../constants';
+
+// Create OpenRouter provider using OpenAI-compatible format
+function createOpenRouterProvider(apiKey: string) {
+  const provider = openai({
+    baseURL: 'https://openrouter.ai/api/v1',
+    apiKey: apiKey,
+  });
+
+  return customProvider({
+    languageModels: {
+      'chat-model': provider('anthropic/claude-3-haiku'),
+      'chat-model-reasoning': wrapLanguageModel({
+        model: provider('anthropic/claude-3-sonnet'),
+        middleware: extractReasoningMiddleware({ tagName: 'think' }),
+      }),
+      'title-model': provider('anthropic/claude-3-haiku'),
+      'artifact-model': provider('anthropic/claude-3-haiku'),
+    },
+  });
+}
 
 export const myProvider = isTestEnvironment
   ? customProvider({
@@ -21,17 +41,12 @@ export const myProvider = isTestEnvironment
         'artifact-model': artifactModel,
       },
     })
-  : customProvider({
-      languageModels: {
-        'chat-model': xai('grok-2-vision-1212'),
-        'chat-model-reasoning': wrapLanguageModel({
-          model: xai('grok-3-mini-beta'),
-          middleware: extractReasoningMiddleware({ tagName: 'think' }),
-        }),
-        'title-model': xai('grok-2-1212'),
-        'artifact-model': xai('grok-2-1212'),
-      },
-      imageModels: {
-        'small-model': xai.imageModel('grok-2-image'),
-      },
-    });
+  : createOpenRouterProvider(process.env.OPENROUTER_API_KEY || '');
+
+// Function to create provider with user's API key
+export function createUserProvider(userApiKey: string) {
+  if (isTestEnvironment) {
+    return myProvider;
+  }
+  return createOpenRouterProvider(userApiKey);
+}

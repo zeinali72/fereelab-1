@@ -1172,3 +1172,22 @@ export const WarningIcon = ({ size = 16 }: { size?: number }) => {
     </svg>
   );
 };
+
+export const SettingsIcon = ({ size = 16 }: { size?: number }) => {
+  return (
+    <svg
+      height={size}
+      strokeLinejoin="round"
+      viewBox="0 0 16 16"
+      width={size}
+      style={{ color: 'currentcolor' }}
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M9.48 1.17a.75.75 0 0 1 .04 1.06L8.72 3H10.5a.75.75 0 0 1 0 1.5H8.72l.8.77a.75.75 0 0 1-1.04 1.08L6.75 4.81V6.5a.75.75 0 0 1-1.5 0V4.81L3.52 6.35a.75.75 0 0 1-1.04-1.08L3.28 4.5H1.5a.75.75 0 0 1 0-1.5h1.78l-.8-.77a.75.75 0 0 1 1.04-1.08L5.25 2.69V1a.75.75 0 0 1 1.5 0v1.69l1.73-1.54a.75.75 0 0 1 1 .02zM8 7c2.76 0 5 2.24 5 5s-2.24 5-5 5-5-2.24-5-5 2.24-5 5-5zm0 7.5c1.38 0 2.5-1.12 2.5-2.5s-1.12-2.5-2.5-2.5-2.5 1.12-2.5 2.5 1.12 2.5 2.5 2.5z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+};

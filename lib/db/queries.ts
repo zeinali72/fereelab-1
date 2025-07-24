@@ -80,6 +80,40 @@ export async function createGuestUser() {
   }
 }
 
+export async function updateUserOpenRouterApiKey(
+  userId: string,
+  openrouterApiKey: string,
+) {
+  try {
+    return await db
+      .update(user)
+      .set({ openrouterApiKey })
+      .where(eq(user.id, userId));
+  } catch (error) {
+    throw new ChatSDKError(
+      'bad_request:database',
+      'Failed to update OpenRouter API key',
+    );
+  }
+}
+
+export async function getUserOpenRouterApiKey(userId: string): Promise<string | null> {
+  try {
+    const result = await db
+      .select({ openrouterApiKey: user.openrouterApiKey })
+      .from(user)
+      .where(eq(user.id, userId))
+      .limit(1);
+    
+    return result[0]?.openrouterApiKey || null;
+  } catch (error) {
+    throw new ChatSDKError(
+      'bad_request:database',
+      'Failed to get OpenRouter API key',
+    );
+  }
+}
+
 export async function saveChat({
   id,
   userId,
