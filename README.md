@@ -24,19 +24,19 @@
 - [AI SDK](https://sdk.vercel.ai/docs)
   - Unified API for generating text, structured objects, and tool calls with LLMs
   - Hooks for building dynamic chat and generative user interfaces
-  - Supports xAI (default), OpenAI, Fireworks, and other model providers
+  - Supports OpenRouter (default) for access to multiple AI providers
 - [shadcn/ui](https://ui.shadcn.com)
   - Styling with [Tailwind CSS](https://tailwindcss.com)
   - Component primitives from [Radix UI](https://radix-ui.com) for accessibility and flexibility
 - Data Persistence
-  - [Neon Serverless Postgres](https://vercel.com/marketplace/neon) for saving chat history and user data
-  - [Vercel Blob](https://vercel.com/storage/blob) for efficient file storage
+  - PostgreSQL for saving chat history and user data
+  - Redis for session storage and caching
 - [Auth.js](https://authjs.dev)
   - Simple and secure authentication
 
 ## Model Providers
 
-This template ships with [xAI](https://x.ai) `grok-2-1212` as the default chat model. However, with the [AI SDK](https://sdk.vercel.ai/docs), you can switch LLM providers to [OpenAI](https://openai.com), [Anthropic](https://anthropic.com), [Cohere](https://cohere.com/), and [many more](https://sdk.vercel.ai/providers/ai-sdk-providers) with just a few lines of code.
+This template uses [OpenRouter](https://openrouter.ai) as the AI provider, giving you access to a wide variety of language models from different providers. You can easily switch between models and providers through OpenRouter's unified API.
 
 ## Deploy Your Own
 
@@ -46,17 +46,183 @@ You can deploy your own version of the Next.js AI Chatbot to Vercel with one cli
 
 ## Running locally
 
-You will need to use the environment variables [defined in `.env.example`](.env.example) to run Next.js AI Chatbot. It's recommended you use [Vercel Environment Variables](https://vercel.com/docs/projects/environment-variables) for this, but a `.env` file is all that is necessary.
+### Prerequisites
 
-> Note: You should not commit your `.env` file or it will expose secrets that will allow others to control access to your various AI and authentication provider accounts.
+Before running the application locally, you need to set up the following services:
 
-1. Install Vercel CLI: `npm i -g vercel`
-2. Link local instance with Vercel and GitHub accounts (creates `.vercel` directory): `vercel link`
-3. Download your environment variables: `vercel env pull`
+#### 1. PostgreSQL Database
 
+**Option A: Using Docker (Recommended)**
 ```bash
-pnpm install
-pnpm dev
+# Run PostgreSQL container
+docker run --name fereelab-postgres \
+  -e POSTGRES_USER=postgres \
+  -e POSTGRES_PASSWORD=password \
+  -e POSTGRES_DB=fereelab \
+  -p 5432:5432 \
+  -d postgres:15
 ```
 
-Your app template should now be running on [localhost:3000](http://localhost:3000).
+**Option B: Install PostgreSQL locally**
+- Install PostgreSQL from [postgresql.org](https://www.postgresql.org/download/)
+- Create a database named `fereelab`
+- Create a user with appropriate permissions
+
+#### 2. Redis
+
+**Option A: Using Docker (Recommended)**
+```bash
+# Run Redis container
+docker run --name fereelab-redis \
+  -p 6379:6379 \
+  -d redis:7-alpine
+```
+
+**Option B: Install Redis locally**
+- Install Redis from [redis.io](https://redis.io/download)
+- Start the Redis server on default port 6379
+
+#### 3. OpenRouter API Key
+
+1. Sign up at [OpenRouter](https://openrouter.ai)
+2. Navigate to [API Keys](https://openrouter.ai/keys)
+3. Create a new API key
+4. Copy the key for use in your environment variables
+
+### Setup and Installation
+
+1. **Clone the repository and install dependencies:**
+```bash
+git clone <your-repository-url>
+cd fereelab-1
+npm install
+```
+
+2. **Set up environment variables:**
+```bash
+# Copy the example environment file
+cp .env.example .env.local
+
+# Edit .env.local with your actual values
+# AUTH_SECRET=your-generated-secret
+# OPENROUTER_API_KEY=your-openrouter-api-key
+# POSTGRES_URL=postgresql://postgres:password@localhost:5432/fereelab
+# REDIS_URL=redis://localhost:6379
+```
+
+3. **Generate AUTH_SECRET:**
+```bash
+# Generate a random secret
+openssl rand -base64 32
+# Or visit https://generate-secret.vercel.app/32
+```
+
+4. **Run database migrations:**
+```bash
+npm run db:migrate
+```
+
+5. **Start the development server:**
+```bash
+npm run dev
+```
+
+Your app should now be running on [localhost:3000](http://localhost:3000).
+
+### Production Build
+
+For production builds, make sure to run migrations before building:
+
+```bash
+# Run migrations first
+npm run db:migrate
+
+# Then build
+npm run build
+
+# Start production server
+npm start
+```
+
+### Database Management
+
+```bash
+# Generate new migration
+npm run db:generate
+
+# Run migrations
+npm run db:migrate
+
+# Open Drizzle Studio (database GUI)
+npm run db:studio
+
+# Push schema changes directly (development only)
+npm run db:push
+```
+
+### Development Workflow
+
+1. **Start services** (if using Docker):
+```bash
+# Start both PostgreSQL and Redis
+docker start fereelab-postgres fereelab-redis
+```
+
+2. **Development server**:
+```bash
+npm run dev
+```
+
+3. **Building for production**:
+```bash
+npm run build
+npm start
+```
+
+### Troubleshooting
+
+**Database connection issues:**
+- Ensure PostgreSQL is running on port 5432
+- Check that the database `fereelab` exists
+- Verify connection string in `.env.local`
+
+**Redis connection issues:**
+- Ensure Redis is running on port 6379
+- Check Redis connection with: `redis-cli ping`
+
+**OpenRouter API issues:**
+- Verify your API key is valid
+- Check your OpenRouter account balance
+- Ensure the API key has appropriate permissions
+
+### Docker Compose (Alternative Setup)
+
+Create a `docker-compose.yml` file for easier local development:
+
+```yaml
+version: '3.8'
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: fereelab
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+volumes:
+  postgres_data:
+```
+
+Then run:
+```bash
+docker-compose up -d
+```

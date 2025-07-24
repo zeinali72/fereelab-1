@@ -3,7 +3,7 @@ import {
   extractReasoningMiddleware,
   wrapLanguageModel,
 } from 'ai';
-import { xai } from '@ai-sdk/xai';
+import { openai } from '@ai-sdk/openai';
 import {
   artifactModel,
   chatModel,
@@ -12,36 +12,25 @@ import {
 } from './models.test';
 import { isTestEnvironment } from '../constants';
 
-// Create provider - for now using xAI as the base
-// In a full implementation, this would be extended to support OpenRouter
+// Create provider using OpenRouter API
 function createProviderWithApiKey(apiKey: string) {
-  // Store the original API key
-  const originalApiKey = process.env.XAI_API_KEY;
-  
-  // Temporarily set the API key
-  process.env.XAI_API_KEY = apiKey;
+  // Create OpenRouter provider with custom base URL and API key
+  const openrouterProvider = openai({
+    baseURL: 'https://openrouter.ai/api/v1',
+    apiKey: apiKey,
+  });
   
   const provider = customProvider({
     languageModels: {
-      'chat-model': xai('grok-2-vision-1212'),
+      'chat-model': openrouterProvider('meta-llama/llama-3.1-8b-instruct:free'),
       'chat-model-reasoning': wrapLanguageModel({
-        model: xai('grok-3-mini-beta'),
+        model: openrouterProvider('meta-llama/llama-3.1-8b-instruct:free'),
         middleware: extractReasoningMiddleware({ tagName: 'think' }),
       }),
-      'title-model': xai('grok-2-1212'),
-      'artifact-model': xai('grok-2-1212'),
-    },
-    imageModels: {
-      'small-model': xai.imageModel('grok-2-image'),
+      'title-model': openrouterProvider('meta-llama/llama-3.1-8b-instruct:free'),
+      'artifact-model': openrouterProvider('meta-llama/llama-3.1-8b-instruct:free'),
     },
   });
-
-  // Restore the original API key
-  if (originalApiKey) {
-    process.env.XAI_API_KEY = originalApiKey;
-  } else {
-    delete process.env.XAI_API_KEY;
-  }
 
   return provider;
 }
@@ -57,22 +46,30 @@ export const myProvider = isTestEnvironment
     })
   : customProvider({
       languageModels: {
-        'chat-model': xai('grok-2-vision-1212'),
+        'chat-model': openai({
+          baseURL: 'https://openrouter.ai/api/v1',
+          apiKey: process.env.OPENROUTER_API_KEY,
+        })('meta-llama/llama-3.1-8b-instruct:free'),
         'chat-model-reasoning': wrapLanguageModel({
-          model: xai('grok-3-mini-beta'),
+          model: openai({
+            baseURL: 'https://openrouter.ai/api/v1',
+            apiKey: process.env.OPENROUTER_API_KEY,
+          })('meta-llama/llama-3.1-8b-instruct:free'),
           middleware: extractReasoningMiddleware({ tagName: 'think' }),
         }),
-        'title-model': xai('grok-2-1212'),
-        'artifact-model': xai('grok-2-1212'),
-      },
-      imageModels: {
-        'small-model': xai.imageModel('grok-2-image'),
+        'title-model': openai({
+          baseURL: 'https://openrouter.ai/api/v1',
+          apiKey: process.env.OPENROUTER_API_KEY,
+        })('meta-llama/llama-3.1-8b-instruct:free'),
+        'artifact-model': openai({
+          baseURL: 'https://openrouter.ai/api/v1',
+          apiKey: process.env.OPENROUTER_API_KEY,
+        })('meta-llama/llama-3.1-8b-instruct:free'),
       },
     });
 
 // Function to create provider with user's API key
-// For demonstration, we'll use the user's key with xAI
-// In production, this would be modified to use OpenRouter or other providers
+// Uses OpenRouter API with the user's provided API key
 export function createUserProvider(userApiKey: string) {
   if (isTestEnvironment) {
     return myProvider;
