@@ -11,6 +11,8 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  // Optimize for production builds
+  productionBrowserSourceMaps: false,
 };
 
 export default nextConfig;

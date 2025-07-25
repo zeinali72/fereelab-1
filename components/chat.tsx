@@ -50,6 +50,12 @@ export function Chat({
 
   const [input, setInput] = useState<string>('');
 
+  // Reply function to handle message replies
+  const handleReply = (content: string) => {
+    setInput(content);
+    // Focus the input (this will be handled by the MultimodalInput component)
+  };
+
   const {
     messages,
     setMessages,
@@ -146,25 +152,29 @@ export function Chat({
           regenerate={regenerate}
           isReadonly={isReadonly}
           isArtifactVisible={isArtifactVisible}
+          onReply={handleReply}
         />
 
-        <form className="flex mx-auto px-4 bg-background pb-4 md:pb-6 gap-2 w-full md:max-w-3xl">
-          {!isReadonly && (
-            <MultimodalInput
-              chatId={id}
-              input={input}
-              setInput={setInput}
-              status={status}
-              stop={stop}
-              attachments={attachments}
-              setAttachments={setAttachments}
-              messages={messages}
-              setMessages={setMessages}
-              sendMessage={sendMessage}
-              selectedVisibilityType={visibilityType}
-            />
-          )}
-        </form>
+        <div className="relative">
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/95 to-transparent pointer-events-none" />
+          <form className="flex mx-auto px-4 bg-background/80 backdrop-blur-sm pb-6 md:pb-8 pt-4 gap-2 w-full md:max-w-4xl border-t border-border/50">
+            {!isReadonly && (
+              <MultimodalInput
+                chatId={id}
+                input={input}
+                setInput={setInput}
+                status={status}
+                stop={stop}
+                attachments={attachments}
+                setAttachments={setAttachments}
+                messages={messages}
+                setMessages={setMessages}
+                sendMessage={sendMessage}
+                selectedVisibilityType={visibilityType}
+              />
+            )}
+          </form>
+        </div>
       </div>
 
       <Artifact
