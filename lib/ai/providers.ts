@@ -3,7 +3,7 @@ import {
   extractReasoningMiddleware,
   wrapLanguageModel,
 } from 'ai';
-import { openai } from '@ai-sdk/openai';
+import { createOpenAI } from '@ai-sdk/openai';
 import {
   artifactModel,
   chatModel,
@@ -12,23 +12,32 @@ import {
 } from './models.test';
 import { isTestEnvironment } from '../constants';
 
+// Function to add missing supportedUrls property for compatibility
+function makeModelV2Compatible(model: any) {
+  if (!model.supportedUrls) {
+    model.supportedUrls = {};
+  }
+  return model;
+}
+
 // Create provider using OpenRouter API
 function createProviderWithApiKey(apiKey: string) {
-  // Create OpenRouter provider with custom base URL and API key
-  const openrouterProvider = openai({
+  // Create OpenRouter provider using createOpenAI
+  const openrouter = createOpenAI({
     baseURL: 'https://openrouter.ai/api/v1',
     apiKey: apiKey,
   });
+
+  // Create language models and ensure compatibility
+  const baseModel = openrouter('meta-llama/llama-3.1-8b-instruct:free');
+  const chatModelInstance = makeModelV2Compatible(baseModel);
   
   const provider = customProvider({
     languageModels: {
-      'chat-model': openrouterProvider('meta-llama/llama-3.1-8b-instruct:free'),
-      'chat-model-reasoning': wrapLanguageModel({
-        model: openrouterProvider('meta-llama/llama-3.1-8b-instruct:free'),
-        middleware: extractReasoningMiddleware({ tagName: 'think' }),
-      }),
-      'title-model': openrouterProvider('meta-llama/llama-3.1-8b-instruct:free'),
-      'artifact-model': openrouterProvider('meta-llama/llama-3.1-8b-instruct:free'),
+      'chat-model': chatModelInstance,
+      'chat-model-reasoning': chatModelInstance, // Simplified for now to avoid version issues
+      'title-model': chatModelInstance,
+      'artifact-model': chatModelInstance,
     },
   });
 
@@ -44,29 +53,24 @@ export const myProvider = isTestEnvironment
         'artifact-model': artifactModel,
       },
     })
-  : customProvider({
-      languageModels: {
-        'chat-model': openai({
-          baseURL: 'https://openrouter.ai/api/v1',
-          apiKey: process.env.OPENROUTER_API_KEY,
-        })('meta-llama/llama-3.1-8b-instruct:free'),
-        'chat-model-reasoning': wrapLanguageModel({
-          model: openai({
-            baseURL: 'https://openrouter.ai/api/v1',
-            apiKey: process.env.OPENROUTER_API_KEY,
-          })('meta-llama/llama-3.1-8b-instruct:free'),
-          middleware: extractReasoningMiddleware({ tagName: 'think' }),
-        }),
-        'title-model': openai({
-          baseURL: 'https://openrouter.ai/api/v1',
-          apiKey: process.env.OPENROUTER_API_KEY,
-        })('meta-llama/llama-3.1-8b-instruct:free'),
-        'artifact-model': openai({
-          baseURL: 'https://openrouter.ai/api/v1',
-          apiKey: process.env.OPENROUTER_API_KEY,
-        })('meta-llama/llama-3.1-8b-instruct:free'),
-      },
-    });
+  : (() => {
+      const openrouter = createOpenAI({
+        baseURL: 'https://openrouter.ai/api/v1',
+        apiKey: process.env.OPENROUTER_API_KEY || '',
+      });
+
+      const baseModel = openrouter('meta-llama/llama-3.1-8b-instruct:free');
+      const chatModelInstance = makeModelV2Compatible(baseModel);
+
+      return customProvider({
+        languageModels: {
+          'chat-model': chatModelInstance,
+          'chat-model-reasoning': chatModelInstance, // Simplified for now
+          'title-model': chatModelInstance,
+          'artifact-model': chatModelInstance,
+        },
+      });
+    })();
 
 // Function to create provider with user's API key
 // Uses OpenRouter API with the user's provided API key
