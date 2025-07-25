@@ -18,6 +18,7 @@ interface MessagesProps {
   regenerate: UseChatHelpers<ChatMessage>['regenerate'];
   isReadonly: boolean;
   isArtifactVisible: boolean;
+  onReply?: (content: string) => void;
 }
 
 function PureMessages({
@@ -28,6 +29,7 @@ function PureMessages({
   setMessages,
   regenerate,
   isReadonly,
+  onReply,
 }: MessagesProps) {
   const {
     containerRef: messagesContainerRef,
@@ -66,6 +68,7 @@ function PureMessages({
           requiresScrollPadding={
             hasSentMessage && index === messages.length - 1
           }
+          onReply={onReply}
         />
       ))}
 

@@ -1191,3 +1191,22 @@ export const SettingsIcon = ({ size = 16 }: { size?: number }) => {
     </svg>
   );
 };
+
+export const MessageCircleIcon = ({ size = 16 }: { size?: number }) => {
+  return (
+    <svg
+      height={size}
+      strokeLinejoin="round"
+      viewBox="0 0 16 16"
+      width={size}
+      style={{ color: 'currentcolor' }}
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M8 1C4.134 1 1 4.134 1 8C1 9.293 1.385 10.498 2.041 11.526L1.293 14.293L1.207 14.707L1.293 14.793L4.474 13.959C5.502 14.615 6.707 15 8 15C11.866 15 15 11.866 15 8C15 4.134 11.866 1 8 1ZM2.5 8C2.5 4.962 4.962 2.5 8 2.5C11.038 2.5 13.5 4.962 13.5 8C13.5 11.038 11.038 13.5 8 13.5C6.915 13.5 5.915 13.158 5.095 12.567L4.826 12.372L2.872 12.872L3.433 10.905L3.238 10.636C2.647 9.816 2.5 8.916 2.5 8Z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+};

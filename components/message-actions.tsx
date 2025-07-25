@@ -3,7 +3,7 @@ import { useCopyToClipboard } from 'usehooks-ts';
 
 import type { Vote } from '@/lib/db/schema';
 
-import { CopyIcon, ThumbDownIcon, ThumbUpIcon } from './icons';
+import { CopyIcon, ThumbDownIcon, ThumbUpIcon, MessageCircleIcon } from './icons';
 import { Button } from './ui/button';
 import {
   Tooltip,
@@ -21,11 +21,13 @@ export function PureMessageActions({
   message,
   vote,
   isLoading,
+  onReply,
 }: {
   chatId: string;
   message: ChatMessage;
   vote: Vote | undefined;
   isLoading: boolean;
+  onReply?: (messageContent: string) => void;
 }) {
   const { mutate } = useSWRConfig();
   const [_, copyToClipboard] = useCopyToClipboard();
@@ -33,9 +35,44 @@ export function PureMessageActions({
   if (isLoading) return null;
   if (message.role === 'user') return null;
 
+  const handleReply = () => {
+    const textFromParts = message.parts
+      ?.filter((part) => part.type === 'text')
+      .map((part) => part.text)
+      .join('\n')
+      .trim();
+
+    if (!textFromParts) {
+      toast.error("There's no text to reply to!");
+      return;
+    }
+
+    // Create a reply prompt that references the assistant's message
+    const replyPrompt = `Regarding your previous response:\n\n"${textFromParts.slice(0, 200)}${textFromParts.length > 200 ? '...' : ''}"\n\n`;
+    
+    if (onReply) {
+      onReply(replyPrompt);
+    }
+  };
+
   return (
     <TooltipProvider delayDuration={0}>
       <div className="flex flex-row gap-2">
+        {onReply && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                className="py-1 px-2 h-fit text-muted-foreground hover:text-foreground"
+                variant="outline"
+                onClick={handleReply}
+              >
+                <MessageCircleIcon />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Reply to this message</TooltipContent>
+          </Tooltip>
+        )}
+
         <Tooltip>
           <TooltipTrigger asChild>
             <Button
