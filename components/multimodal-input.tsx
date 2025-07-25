@@ -276,50 +276,63 @@ function PureMultimodalInput({
         </div>
       )}
 
-      <Textarea
-        data-testid="multimodal-input"
-        ref={textareaRef}
-        placeholder="Send a message..."
-        value={input}
-        onChange={handleInput}
-        className={cx(
-          'min-h-[24px] max-h-[calc(75dvh)] overflow-hidden resize-none rounded-2xl !text-base bg-muted pb-10 dark:border-zinc-700',
-          className,
-        )}
-        rows={2}
-        autoFocus
-        onKeyDown={(event) => {
-          if (
-            event.key === 'Enter' &&
-            !event.shiftKey &&
-            !event.nativeEvent.isComposing
-          ) {
-            event.preventDefault();
+      <motion.div
+        initial={{ scale: 0.98, opacity: 0.8 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 0.2, ease: "easeOut" }}
+        className="relative"
+      >
+        <Textarea
+          data-testid="multimodal-input"
+          ref={textareaRef}
+          placeholder="Send a message..."
+          value={input}
+          onChange={handleInput}
+          className={cx(
+            'min-h-[56px] max-h-[calc(75dvh)] overflow-hidden resize-none rounded-2xl !text-base bg-muted/80 backdrop-blur-sm pb-12 pt-4 px-4 pr-20 dark:border-zinc-700 border-2 border-transparent transition-all duration-200 focus:border-primary/50 focus:bg-muted/90 focus:shadow-lg focus:shadow-primary/10 hover:bg-muted/90',
+            className,
+          )}
+          rows={3}
+          autoFocus
+          onKeyDown={(event) => {
+            if (
+              event.key === 'Enter' &&
+              !event.shiftKey &&
+              !event.nativeEvent.isComposing
+            ) {
+              event.preventDefault();
 
-            if (status !== 'ready') {
-              toast.error('Please wait for the model to finish its response!');
-            } else {
-              submitForm();
+              if (status !== 'ready') {
+                toast.error('Please wait for the model to finish its response!');
+              } else {
+                submitForm();
+              }
             }
-          }
-        }}
-      />
+          }}
+        />
 
-      <div className="absolute bottom-0 p-2 w-fit flex flex-row justify-start">
-        <AttachmentsButton fileInputRef={fileInputRef} status={status} />
-      </div>
+        <div className="absolute bottom-2 left-2 flex items-center">
+          <AttachmentsButton fileInputRef={fileInputRef} status={status} />
+        </div>
 
-      <div className="absolute bottom-0 right-0 p-2 w-fit flex flex-row justify-end">
-        {status === 'submitted' ? (
-          <StopButton stop={stop} setMessages={setMessages} />
-        ) : (
-          <SendButton
-            input={input}
-            submitForm={submitForm}
-            uploadQueue={uploadQueue}
-          />
-        )}
-      </div>
+        <div className="absolute bottom-2 right-2 flex items-center">
+          {status === 'submitted' ? (
+            <StopButton stop={stop} setMessages={setMessages} />
+          ) : (
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ duration: 0.1 }}
+            >
+              <SendButton
+                input={input}
+                submitForm={submitForm}
+                uploadQueue={uploadQueue}
+              />
+            </motion.div>
+          )}
+        </div>
+      </motion.div>
     </div>
   );
 }

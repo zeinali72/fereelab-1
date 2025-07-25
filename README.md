@@ -1,52 +1,224 @@
-<a href="https://chat.vercel.ai/">
-  <img alt="Next.js 14 and App Router-ready AI chatbot." src="app/(chat)/opengraph-image.png">
-  <h1 align="center">Chat SDK</h1>
-</a>
+# AI Chatbot with OpenRouter Integration
 
 <p align="center">
-    Chat SDK is a free, open-source template built with Next.js and the AI SDK that helps you quickly build powerful chatbot applications.
+  <img alt="Advanced AI Chatbot with Model Marketplace" src="app/(chat)/opengraph-image.png" width="600">
 </p>
 
 <p align="center">
-  <a href="https://chat-sdk.dev"><strong>Read Docs</strong></a> ·
+    A comprehensive AI chatbot application built with Next.js, featuring OpenRouter integration, model marketplace, and advanced UI/UX.
+</p>
+
+<p align="center">
   <a href="#features"><strong>Features</strong></a> ·
-  <a href="#model-providers"><strong>Model Providers</strong></a> ·
-  <a href="#deploy-your-own"><strong>Deploy Your Own</strong></a> ·
-  <a href="#running-locally"><strong>Running locally</strong></a>
+  <a href="#model-marketplace"><strong>Model Marketplace</strong></a> ·
+  <a href="#setup"><strong>Setup</strong></a> ·
+  <a href="#deployment"><strong>Deployment</strong></a> ·
+  <a href="#usage"><strong>Usage</strong></a>
 </p>
-<br/>
 
-## Features
+---
 
-- [Next.js](https://nextjs.org) App Router
-  - Advanced routing for seamless navigation and performance
-  - React Server Components (RSCs) and Server Actions for server-side rendering and increased performance
-- [AI SDK](https://sdk.vercel.ai/docs)
-  - Unified API for generating text, structured objects, and tool calls with LLMs
-  - Hooks for building dynamic chat and generative user interfaces
-  - Supports OpenRouter (default) for access to multiple AI providers
-- [shadcn/ui](https://ui.shadcn.com)
-  - Styling with [Tailwind CSS](https://tailwindcss.com)
-  - Component primitives from [Radix UI](https://radix-ui.com) for accessibility and flexibility
-- Data Persistence
-  - PostgreSQL for saving chat history and user data
-  - Redis for session storage and caching
-- [Auth.js](https://authjs.dev)
-  - Simple and secure authentication
+## ✨ Features
 
-## Model Providers
+### 🤖 **Advanced AI Integration**
+- **OpenRouter API**: Access to 50+ language models from various providers
+- **Dynamic Model Selection**: Switch between models on-the-fly
+- **Streaming Responses**: Real-time message streaming
+- **Model Marketplace**: Browse and select models with pricing information
 
-This template uses [OpenRouter](https://openrouter.ai) as the AI provider, giving you access to a wide variety of language models from different providers. You can easily switch between models and providers through OpenRouter's unified API.
+### 🎨 **Enhanced User Experience**
+- **Reply System**: Click reply on any bot message to continue conversations
+- **Enhanced Chat Input**: Larger input area with animations and blur effects
+- **Settings Panel**: Manage API keys and view usage statistics
+- **Modern UI**: Clean design with smooth animations and transitions
 
-## Deploy Your Own
+### 🔐 **Authentication & Security**
+- **NextAuth.js Integration**: Secure user authentication
+- **API Key Management**: Secure storage and management of OpenRouter API keys
+- **User Profiles**: Personal chat history and preferences
 
-You can deploy your own version of the Next.js AI Chatbot to Vercel with one click:
+### 💾 **Data Persistence**
+- **PostgreSQL**: Reliable chat history storage
+- **Redis Caching**: Fast session management and data caching
+- **Real-time Updates**: Live chat synchronization
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fai-chatbot&env=AUTH_SECRET&envDescription=Learn+more+about+how+to+get+the+API+Keys+for+the+application&envLink=https%3A%2F%2Fgithub.com%2Fvercel%2Fai-chatbot%2Fblob%2Fmain%2F.env.example&demo-title=AI+Chatbot&demo-description=An+Open-Source+AI+Chatbot+Template+Built+With+Next.js+and+the+AI+SDK+by+Vercel.&demo-url=https%3A%2F%2Fchat.vercel.ai&products=%5B%7B%22type%22%3A%22integration%22%2C%22protocol%22%3A%22ai%22%2C%22productSlug%22%3A%22grok%22%2C%22integrationSlug%22%3A%22xai%22%7D%2C%7B%22type%22%3A%22integration%22%2C%22protocol%22%3A%22storage%22%2C%22productSlug%22%3A%22neon%22%2C%22integrationSlug%22%3A%22neon%22%7D%2C%7B%22type%22%3A%22integration%22%2C%22protocol%22%3A%22storage%22%2C%22productSlug%22%3A%22upstash-kv%22%2C%22integrationSlug%22%3A%22upstash%22%7D%2C%7B%22type%22%3A%22blob%22%7D%5D)
+### 🛠 **Developer Experience**
+- **Next.js App Router**: Modern React framework with server components
+- **TypeScript**: Full type safety
+- **Tailwind CSS**: Utility-first styling
+- **Docker Support**: Containerized deployment ready
 
-## Running locally
+## 🏪 Model Marketplace
+
+The integrated model marketplace provides:
+
+- **Browse Models**: Explore 50+ AI models from providers like OpenAI, Anthropic, Google, Meta, and more
+- **Price Comparison**: View real-time pricing for prompt and completion tokens
+- **Model Filtering**: Filter by price (free/paid), search by name, and sort by various criteria
+- **Context Information**: See context length and capabilities for each model
+- **One-Click Selection**: Instantly switch to any model for your conversations
+
+### Supported Model Providers
+- OpenAI (GPT-4, GPT-3.5)
+- Anthropic (Claude models)
+- Google (Gemini, PaLM)
+- Meta (Llama models)
+- Microsoft (Azure OpenAI)
+- Mistral AI
+- Cohere
+- And many more through OpenRouter
+
+## 🚀 Setup
 
 ### Prerequisites
+
+- Node.js 18+ 
+- PostgreSQL database
+- Redis instance
+- OpenRouter API key
+
+### Environment Variables
+
+Create a `.env.local` file:
+
+```bash
+# Disable Next.js telemetry
+NEXT_TELEMETRY_DISABLED=1
+
+# Database Configuration
+DATABASE_URL="postgresql://username:password@localhost:5432/ai_chatbot"
+POSTGRES_URL="postgresql://username:password@localhost:5432/ai_chatbot"
+
+# Redis Configuration  
+REDIS_URL="redis://localhost:6379"
+
+# Authentication
+AUTH_SECRET="your-auth-secret-key-here"
+AUTH_URL="http://localhost:3000"
+
+# OpenRouter API (get from https://openrouter.ai/keys)
+OPENROUTER_API_KEY="your-openrouter-api-key-here"
+
+# Optional: Google Gemini API (backup)
+GOOGLE_GENERATIVE_AI_API_KEY="your-google-api-key-here"
+```
+
+### Installation
+
+1. **Clone and install dependencies:**
+```bash
+git clone <repository-url>
+cd fereelab-1
+npm install --legacy-peer-deps
+```
+
+2. **Set up the database:**
+```bash
+npm run db:migrate
+```
+
+3. **Start the development server:**
+```bash
+npm run dev
+```
+
+Visit `http://localhost:3000` to access the application.
+
+## 🌐 Deployment
+
+### Docker Deployment (Recommended)
+
+```bash
+# Build the Docker image
+docker build -t ai-chatbot .
+
+# Run with docker-compose
+docker-compose up -d
+```
+
+### Google Cloud Run
+
+This application is optimized for Google Cloud Run deployment:
+
+1. **Build and push to Google Container Registry:**
+```bash
+gcloud builds submit --tag gcr.io/PROJECT-ID/ai-chatbot
+```
+
+2. **Deploy to Cloud Run:**
+```bash
+gcloud run deploy ai-chatbot \
+  --image gcr.io/PROJECT-ID/ai-chatbot \
+  --platform managed \
+  --region us-central1 \
+  --allow-unauthenticated
+```
+
+### Environment Setup for Production
+
+- **Database**: Use Google Cloud SQL for PostgreSQL
+- **Cache**: Use Google Memorystore for Redis  
+- **Secrets**: Store API keys in Google Secret Manager
+- **Networking**: Configure VPC connector for private database access
+
+## 📖 Usage
+
+### Getting Started
+
+1. **Sign Up/Login**: Create an account or sign in
+2. **API Key Setup**: Add your OpenRouter API key in settings or during onboarding
+3. **Choose a Model**: Browse the model marketplace and select your preferred AI model
+4. **Start Chatting**: Begin conversations with your chosen AI model
+
+### Key Features
+
+- **Model Switching**: Use the marketplace button to change models mid-conversation
+- **Reply to Messages**: Click the reply button on any bot message to reference it
+- **Settings Management**: Access the settings panel (gear icon) to manage API keys
+- **Chat History**: All conversations are automatically saved and synced across devices
+
+### API Key Management
+
+1. **Get API Key**: Visit [OpenRouter](https://openrouter.ai/keys) to get your API key
+2. **Add Key**: Use the settings panel or onboarding flow to add your key
+3. **Usage Tracking**: Monitor your API usage through the settings panel
+
+## 🔧 API Routes
+
+The application provides several API endpoints:
+
+- `GET/POST /api/settings` - Manage user settings and API keys
+- `GET /api/models` - Fetch available models from OpenRouter
+- `POST /api/chat` - Send chat messages and receive AI responses
+- `GET /api/history` - Retrieve chat history
+- `POST /api/auth/*` - Authentication endpoints
+
+## 🏗 Architecture
+
+### Tech Stack
+- **Frontend**: Next.js (App Router), React, Tailwind CSS
+- **Backend**: Next.js API Routes, PostgreSQL, Redis
+- **AI**: OpenRouter API integration  
+- **Authentication**: NextAuth.js
+- **Deployment**: Docker, Google Cloud Run
+
+### Key Design Decisions
+- **Stateless Architecture**: Compatible with serverless deployment
+- **Edge-First**: Optimized for edge computing and CDN delivery
+- **Database Agnostic**: Easy to switch between database providers
+- **Security First**: API keys encrypted, no hardcoded secrets
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit issues, feature requests, or pull requests.
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+**Built with ❤️ using Next.js, OpenRouter, and modern web technologies.**
 
 Before running the application locally, you need to set up the following services:
 
